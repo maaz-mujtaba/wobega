@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Numeric, String, Boolean, DateTime, TIMESTAMP, text, ForeignKey, UniqueConstraint, bigserial, BIGINT
-from database import SessionLocal, Base
+from database import Base
 
 class Users(Base):
     __tablename__ = "users"
