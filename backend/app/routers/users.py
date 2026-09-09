@@ -5,19 +5,9 @@ from database import get_db
 import models
 import schemas
 from typing import List
+from datetime import datetime
 
 app = APIRouter()
-
-@app.get("/users/", response_model=List[schemas.UserBase])
-def get_users(db : Session = Depends(get_db)):
-    return db.query(models.users).all()
-
-@app.get("/users/{user_id}", response_model=schemas.UserBase)
-def get_user(user_id : int,db : Session = Depends(get_db)):
-    user = db.query(models.users).filter(models.users.user_id == user_id).first()
-    if not user:
-        raise HTTPException(status_code = 404, detail = "User does not exist")
-    return user
 
 @app.post("/users/", response_model = schemas.UserBase)
 def create_user(user : schemas.UserCreate, db : Session = Depends(get_db)):
@@ -34,13 +24,25 @@ def create_user(user : schemas.UserCreate, db : Session = Depends(get_db)):
         hashed_password = f"hashed_{user.password}",
         is_active = True,
         role = user.role,
-        created_at = user.created_at,
-        updated_at = user.created_at
+        created_at = datetime.now(),
+        updated_at = datetime.now()
     ) 
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
+
+
+@app.get("/users/", response_model=List[schemas.UserBase])
+def get_users(db : Session = Depends(get_db)):
+    return db.query(models.users).all()
+
+@app.get("/users/{user_id}", response_model=schemas.UserBase)
+def get_user(user_id : int,db : Session = Depends(get_db)):
+    user = db.query(models.users).filter(models.users.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code = 404, detail = "User does not exist")
+    return user
 
 @app.update("/users/{user_id}")
 def update_password(id : int, db : Session = Depends(get_db)):
