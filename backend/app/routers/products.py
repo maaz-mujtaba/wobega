@@ -5,7 +5,7 @@ from app.routers.api import app
 import schemas
 import models
 from database import get_db
-from datetime import datetime
+from datetime import datetime, timestamp
 
 @app.put("/products/")
 def create_product(product : schemas.ProductBase, db : Session = Depends(get_db)):
