@@ -1,0 +1,31 @@
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
+import models
+import schemas
+import uuid
+from database import get_db
+from datetime import datetime
+
+def get_seller(email : str, db : Session = Depends(get_db)):
+    return db.query(models.businesses).filter(models.businesses.email == email).first()
+
+def creat_seller(seller : schemas.BusinessBase, db : Session = Depends(get_db)):
+    if get_seller(seller.email):
+        raise HTTPException(
+            status_code=401,
+            detail= "User Already exists"
+        )
+    new_seller = models.businesses(
+        business_id = seller.business_id,
+        owner_id = seller.owner_id,
+        name = seller.name,
+        email = seller.email,
+        address = seller.address,
+        created_at = datetime.now(),
+        updated_at = datetime.now()
+    )
+    db.add(new_seller)
+    db.commit()
+    db.refresh(new_seller)
+    return new_seller
+
