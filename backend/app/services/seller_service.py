@@ -9,7 +9,7 @@ from datetime import datetime
 def get_seller(email : str, db : Session = Depends(get_db)):
     return db.query(models.businesses).filter(models.businesses.email == email).first()
 
-def creat_seller(seller : schemas.BusinessBase, db : Session = Depends(get_db)):
+def create_seller(seller : schemas.BusinessBase, db : Session = Depends(get_db)):
     if get_seller(seller.email):
         raise HTTPException(
             status_code=401,
@@ -26,4 +26,3 @@ def creat_seller(seller : schemas.BusinessBase, db : Session = Depends(get_db)):
     db.commit()
     db.refresh(new_seller)
     return new_seller
-

@@ -6,58 +6,28 @@ import models
 import schemas
 from typing import List
 from datetime import datetime
+from services.user_service import create_user, get_user, delete_user, update_password, get_users
 
 app = APIRouter()
 
 @app.post("/users/", response_model = schemas.UserBase)
-def create_user(user : schemas.UserCreate, db : Session = Depends(get_db)):
-    
-    #Check is user already exists
-    existing_user = db.query(models.users).filter(models.user.email_id == user.email_id).first()
-    if existing_user:
-        raise HTTPException(status_code = 401, detail="User Already exits")
-    
-    new_user = models.users(
-        user_id = uuid.uuid4(),
-        name = user.name,
-        email = user.email,
-        hashed_password = f"hashed_{user.password}",
-        is_active = True,
-        role = user.role,
-        created_at = datetime.now(),
-        updated_at = datetime.now()
-    ) 
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+def add_user(user : schemas.UserCreate, db : Session = Depends(get_db)):
+    new_user = create_user(user=user, db=db)
     return new_user
 
 
 @app.get("/users/", response_model=List[schemas.UserBase])
-def get_users(db : Session = Depends(get_db)):
-    return db.query(models.users).all()
+def show_users(db : Session = Depends(get_db)):
+    return get_users(db=db)
 
 @app.get("/users/{user_id}", response_model=schemas.UserBase)
-def get_user(user_id : int,db : Session = Depends(get_db)):
-    user = db.query(models.users).filter(models.users.user_id == user_id).first()
-    if not user:
-        raise HTTPException(status_code = 404, detail = "User does not exist")
-    return user
+def show_user(user_id : int,db : Session = Depends(get_db)):
+    return get_user(id = user_id,db=db)
 
 @app.update("/users/{user_id}")
-def update_password(id : int, db : Session = Depends(get_db)):
-    pass
+def edit_password(email : str, db : Session = Depends(get_db)):
+    return update_password(email = email, db = db)
 
-@app.delete("/users/{user_id}")
-def delete_user(id : int, db : Session = Depends(get_db)):
-
-    #Check if user does not exist
-    user = db.query(models.users).filter(models.users.user_id == id).first()
-    if not user:
-        raise HTTPException(
-            status_code = 404,
-            detail = "User does not exist"
-        )
-    
-    db.delete(user)
-    db.refresh()
+@app.delete("/users/{email_id}")
+def remove_user(email : str, db : Session = Depends(get_db)):
+    return delete_user(email=email, db = db)

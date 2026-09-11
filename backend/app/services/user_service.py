@@ -36,12 +36,13 @@ def update_password(email : str, db : Session = Depends(get_db)):
 def get_users(db : Session = Depends(get_db)):
     return db.query(models.users).all()
 
-def delete_user(user : str, db : Session = Depends(get_db)):
-    if not get_user(user.email):
+def delete_user(email : str, db : Session = Depends(get_db)):
+    if not get_user(email):
         raise HTTPException(
             status_code=404,
             detail = "The user does not exist"
         )
+    user = db.query(models.users).filter(models.users.email == email).first()
     db.delete(user)
     db.refresh()
     return True

@@ -7,47 +7,18 @@ import models
 import schemas
 from app.routers.api import app
 from datetime import datetime
+from services.seller_service import create_seller, get_seller
 
 
 @app.post("/sellers/")
 def create_seller(seller : schemas.BusinessBase, db : Session = Depends(get_db)):
-    existing_seller = db.query(models.businesses).filter(models.businesses.business_id == seller.business_id).first()
+    return create_seller(seller = seller, db=db)
 
-    if existing_seller:
-        raise HTTPException(
-            status_code = 401,
-            detail = "Seller Already exist"
-        )
-    
-    new_seller = models.businesses(
-        business_id = seller.business_id,
-        owner_id = seller.owner_id,
-        name = seller.name,
-        email = seller.email,
-        address = seller.address,
-        created_at = datetime.now(),
-        updated_at = datetime.now()
-    )
-
-    db.add(new_seller)
-    db.commit()
-    db.refresh()
-    return new_seller
 
 @app.get("/sellers/", response_model = List[schemas.BusinessBase])
 def get_sellers(db : Session = Depends(get_db)):
     return db.query(models.businesses).all()
 
-@app.get("/sellers/{seller_id}", response_model = List[schemas.BusinessBase])
-def get_seller_by_id(id : int, db : Session = Depends(get_db)):
-
-    #check if user exists
-    seller = db.query(models.businesses).filter(models.businesses.business_id == id).first()
-
-    if not seller:
-        raise HTTPException(
-            status_code = 404, 
-            detail = "Seller does not exist"
-        )
-    
-    return seller
+@app.get("/sellers/{email}", response_model = List[schemas.BusinessBase])
+def get_seller_by_id(email : str, db : Session = Depends(get_db)):
+    return get_seller(email = email, db = db)
