@@ -30,4 +30,11 @@ def create_product(product : schemas.ProductBase, db : Session = Depends(get_db)
     return new_product
 
 def get_product(id : int, db : Session = Depends(get_db)):
-    
+    #check if the product does not exist
+    product = db.query(models.products).filter(models.products.product_id == id).first()
+    if not product:
+        raise HTTPException(
+            status_code=404,
+            detail="The product does not exist"
+        )
+    return product
