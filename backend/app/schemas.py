@@ -13,6 +13,8 @@ class UserCreate(UserBase):
     hash_password : str
     created_at : datetime =  datetime.now()
     updated_at : datetime =  datetime.now()
+    class Config:
+        from_attributes = True
 
 class BusinessBase(BaseModel):
     business_id : int
@@ -20,17 +22,16 @@ class BusinessBase(BaseModel):
     name : str
     email : str
     description : Optional[str] = None
-    created_at : datetime =  datetime.now()
-    updated_at : datetime =  datetime.now()
-
+    class Config :
+        from_attributes = True
 class ProductBase(BaseModel):
     product_id : int
     product_name : str
     category : str
     description : Optional[str] = None
     brand : Optional[str] = None
-    created_at : datetime =  datetime.now()
-    updated_at : datetime =  datetime.now()
+    class Config:
+        from_attributes = True
 
 class ProductListingBase(BaseModel):
     product_listing_id : int
@@ -38,8 +39,8 @@ class ProductListingBase(BaseModel):
     seller_id : int
     price : float
     stock : int
-    created_at : datetime =  datetime.now()
-    updated_at : datetime =  datetime.now()
+    class Config:
+        from_attributes = True
 
 class OrderBase(BaseModel):
     order_id : int
@@ -47,8 +48,8 @@ class OrderBase(BaseModel):
     status : str
     total_amount : float
     shipping_address : str
-    created_at : datetime = datetime.now()
-    updated_at : datetime = datetime.now()
+    class Config:
+        from_attributes = True
 
 class OrderItems(BaseModel):
     order_item_id : int
@@ -64,13 +65,13 @@ class OrderItemsCreate(OrderItems):
 class CartBase(BaseModel):
     cart_id : int
     user_id : int
-    created_at : datetime = datetime.now()
-    updated_at : datetime = datetime.now()
+    class Config:
+        from_attributes = True
 
 class CartItemBase(BaseModel):
     cart_items_id : int
     cart_id : int
     product_listing_id : int
     quantity : int
-    created_at : datetime = datetime.now()
-    updated_at : datetime = datetime.now()
+    class Config:
+        from_attributes = True

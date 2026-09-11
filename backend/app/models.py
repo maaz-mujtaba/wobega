@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, Numeric, String, Boolean, DateTime, TIMESTAMP, text, ForeignKey, UniqueConstraint, bigserial, BIGINT
 from database import Base
+from sqlalchemy.sql import func
 
 class Users(Base):
     __tablename__ = "users"
@@ -10,8 +11,8 @@ class Users(Base):
     role = Column(String, nullable=False)
     hash_password = Column(String, nullable=False)
     phone = Column(String, nullable=True)
-    created_at = Column(TIMESTAMP, nullable=False, server_default=text('now()'))
-    updated_at = Column(TIMESTAMP, nullable=False, server_default=text('now()'), onupdate=text('now()'))
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(),nullable=False)
 
 class businesses(Base):
     __tablename__ = "businesses"
@@ -21,8 +22,8 @@ class businesses(Base):
     name = Column(String, nullable=False)
     email = Column(String, unique = True, nullable=False)
     address = Column(String, nullable=True)
-    created_at = Column(TIMESTAMP, nullable=False, server_default=text('now()'))
-    updated_at = Column(TIMESTAMP, nullable=False, server_default=text('now()'), onupdate=text('now()'))
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(),nullable=False)
 
 class products(Base):
 
@@ -33,8 +34,8 @@ class products(Base):
     category = Column(String, nullable=False)
     description = Column(text, nullable = True)
     brand = Column(String, nullable=True)
-    created_at = Column(TIMESTAMP, default = text('now()'), nullable=False)
-    updated_at = Column(TIMESTAMP, default=text('now()'), onupdate=text('now()'), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(),nullable=False)
 
 class product_listings(Base):
 
@@ -45,8 +46,8 @@ class product_listings(Base):
     seller_id = Column(BIGINT, ForeignKey('businesses.business_id'), nullable=False)
     price = Column(Numeric(12,2), nullable=False)
     stock = Column(Integer, nullable=False, default=0)
-    created_at = Column(TIMESTAMP, default=text('now()'), nullable=False)
-    updated_at = Column(TIMESTAMP,default=text('now()'), onupdate=text('now()'), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(),nullable=False)
 
 class orders(Base):
 
@@ -57,9 +58,8 @@ class orders(Base):
     status = Column(String, nullable=False)
     total_amount = Column(Numeric(12,2), nullable=False)
     shipping_address = Column(String, nullable=False)
-    created_at = Column(TIMESTAMP, default=text('now()'), nullable=False)
-    updated_at = Column(TIMESTAMP, default=text('now()'), onupdate=text('now()'), nullable=False)
-
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(),nullable=False)
 class order_items(Base):
     __tablename__ = "order_items"
 
@@ -87,5 +87,5 @@ class cart_items(Base):
     cart_id = Column(BIGINT, ForeignKey('carts.cart_id'), nullable=False)
     product_listing_id = Column(BIGINT, ForeignKey('product_listings.product_listing_id'), nullable=False)
     quantity = Column(Numeric(8,0), nullable=False)
-    created_at = Column(TIMESTAMP, default=text('now()'), nullable=False)  
-    updated_at = Column(TIMESTAMP, default=text('now()'), onupdate=text('now()'), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(),nullable=False)

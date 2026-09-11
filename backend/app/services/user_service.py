@@ -24,8 +24,6 @@ def create_user(user : schemas.userBase, db : Session = Depends(get_db)):
         hashed_password = f"hashed_{user.password}",
         is_active = True,
         role = user.role,
-        created_at = datetime.now(),
-        updated_at = datetime.now()
     )
     db.add(new_user)
     db.commit()

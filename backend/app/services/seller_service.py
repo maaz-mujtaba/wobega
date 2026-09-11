@@ -20,9 +20,7 @@ def creat_seller(seller : schemas.BusinessBase, db : Session = Depends(get_db)):
         owner_id = seller.owner_id,
         name = seller.name,
         email = seller.email,
-        address = seller.address,
-        created_at = datetime.now(),
-        updated_at = datetime.now()
+        address = seller.address
     )
     db.add(new_seller)
     db.commit()
