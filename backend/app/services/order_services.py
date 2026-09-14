@@ -44,7 +44,7 @@ def create_order(order : schemas.OrderBase, db : Session = Depends(get_db)):
     db.refresh(order)
     return order
 
-def update_status(order : schemas.OrderItems, new_status : str,db : Session = Depends(get_db)):
+def update_status(order : schemas.OrderBase, product_list = schemas.ProductListingBase, new_status : str, db : Session = Depends(get_db)):
     statusList = ["Order Confirmed", "Order Shipped", "Order Out for Delivery", "Order Completed", "Order Cancelled"]
     order_to_look = db.query(models.orders).filter(models.orders == order.order_id).first()
 
@@ -54,6 +54,27 @@ def update_status(order : schemas.OrderItems, new_status : str,db : Session = De
     if new_status == order_to_look.status:
         return {"message" : "Input status is the same as previous status"}
     order_to_look.status = new_status
+
+    if new_status == "Order Cancelled":
+        item = db.query(models.product_listings).filter(models.product_listings.product_listing_id == product_list.product_listing_id).first()
+        ord = db.query(models.order_items).filter(models.order_items.order_id == order_to_look.order_id).first()
+        item.stock += ord.quantity
+        db.commit()
+        db.refresh(item)
     db.commit()
     db.refresh(order_to_look)
     return order_to_look
+
+def cancel_order(order : schemas.OrderBase, db : Session = Depends(get_db)):
+    placed_order = db.query(models.orders).filter(models.orders.order_id == order.order_id).first()
+
+    if not placed_order:
+        raise HTTPException(
+            status_code= 404,
+            detail= "Order does not exist"
+        )
+    
+    update_status(order,"Order Cancelled",db)
+
+    db.commit()
+    db.refresh(placed_order)
