@@ -44,7 +44,7 @@ def create_order(order : schemas.OrderBase, db : Session = Depends(get_db)):
     db.refresh(order)
     return order
 
-def update_status(order : schemas.OrderBase, product_list = schemas.ProductListingBase, new_status : str, db : Session = Depends(get_db)):
+def update_status(order : schemas.OrderBase, new_status : str, product_list : schemas.ProductListingBase = None, db : Session = Depends(get_db)):
     statusList = ["Order Confirmed", "Order Shipped", "Order Out for Delivery", "Order Completed", "Order Cancelled"]
     order_to_look = db.query(models.orders).filter(models.orders == order.order_id).first()
 
