@@ -60,7 +60,12 @@ class OrderItems(BaseModel):
     sub_total : float
 
 class OrderItemsCreate(OrderItems):
-    pass
+    order_item_id : int
+    product_listing_id : int
+    order_id : int
+    quantity : int
+    unit_price : float
+    sub_total : float
 
 class CartBase(BaseModel):
     cart_id : int
