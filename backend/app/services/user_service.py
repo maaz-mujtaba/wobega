@@ -6,6 +6,7 @@ from database import get_db
 import uuid
 from typing import List
 from datetime import datetime
+import security
 
 def get_user(email : str, db : Session = Depends(get_db)):
     user = db.query(models.users).filter(models.users.email == email).first()
@@ -17,11 +18,13 @@ def create_user(user : schemas.userBase, db : Session = Depends(get_db)):
             status_code=401,
             detail = "User already exists"
         )
+    
+    hash_password = security.hash_password(user.password)
     new_user = models.users(
         user_id = uuid.uuid4(),
         name = user.name,
         email = user.email,
-        hashed_password = f"hashed_{user.password}",
+        hashed_password = hash_password
         is_active = True,
         role = user.role,
     )
