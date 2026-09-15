@@ -24,7 +24,7 @@ def create_user(user : schemas.userBase, db : Session = Depends(get_db)):
         user_id = uuid.uuid4(),
         name = user.name,
         email = user.email,
-        hashed_password = hash_password
+        hashed_password = hash_password,
         is_active = True,
         role = user.role,
     )
@@ -33,8 +33,28 @@ def create_user(user : schemas.userBase, db : Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-def update_password(email : str, db : Session = Depends(get_db)):
-    pass
+def update_password(email : str, new_password : str ,db : Session = Depends(get_db)):
+    #check if user exists
+    existing_user = db.query(models.Users).filter(models.Users.email == email).first()
+
+    if not existing_user:
+        raise HTTPException(
+            status_code=404,
+            detail="User does not exist"
+        )
+    
+    #check if new_password == old password
+    flag = security.verify_password(new_password,existing_user.hash_password)
+    if flag:
+        return{
+            "message" : "Password is same as the stored password"
+        }
+    
+    existing_user.hash_password = security.hash_password(new_password)
+    db.commit()
+    db.refresh(existing_user)
+    return True
+
 
 def get_users(db : Session = Depends(get_db)):
     return db.query(models.users).all()
