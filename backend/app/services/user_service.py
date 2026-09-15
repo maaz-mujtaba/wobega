@@ -56,10 +56,7 @@ def update_password(email : str, new_password : str ,db : Session = Depends(get_
     return True
 
 
-def get_users(db : Session = Depends(get_db)):
-    return db.query(models.users).all()
-
-def delete_user(email : str, db : Session = Depends(get_db)):
+def delete_account(email : str, db : Session = Depends(get_db)):
     if not get_user(email):
         raise HTTPException(
             status_code=404,

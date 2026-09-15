@@ -24,6 +24,13 @@ class BusinessBase(BaseModel):
     description : Optional[str] = None
     class Config :
         from_attributes = True
+
+class AdminBase(UserBase):
+    role : str
+    created_at : datetime =  datetime.now()
+    updated_at : datetime =  datetime.now()
+    class Config:
+        from_attributes = True
 class ProductBase(BaseModel):
     product_id : int
     product_name : str
