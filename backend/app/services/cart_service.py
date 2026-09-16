@@ -32,7 +32,7 @@ def get_cart(id : int, db : Session = Depends(get_db)):
         )
     return cart
 
-def add_item_to_cart(productListingId : int, cart : schemas.CartBase,cartItem = schemas.CartItemBase, db : Session = Depends(get_db)):
+def add_item_to_cart(productListingId : int, cartId : int, db : Session = Depends(get_db)):
     item_in_kart = db.query(models.cart_items).filter(models.cart_items.product_listing_id == productListingId).first()
 
     if not item_in_kart:
@@ -56,10 +56,10 @@ def add_item_to_cart(productListingId : int, cart : schemas.CartBase,cartItem = 
     db.refresh(item_in_kart)
     return item_in_kart
 
-def remove_item_from_kart(cart_items : schemas.CartItemBase, item_id : int, db : Session = Depends(get_db)):
+def remove_item_from_kart(cart_items_id : int, item_id : int, db : Session = Depends(get_db)):
     #check is cart_items exist
 
-    item_cart = db.query(models.cart_items).filter(models.cart_items.cart_items_id == cart_items.cart_items_id).first()
+    item_cart = db.query(models.cart_items).filter(models.cart_items.cart_items_id == cart_items_id).first()
 
     if not item_cart:
         raise HTTPException(
