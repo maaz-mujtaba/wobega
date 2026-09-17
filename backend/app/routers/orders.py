@@ -1,13 +1,17 @@
-from api import app
+from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
-import schemas
-import models
-from database import get_db
+from app import schemas
+from app import models
+from app.database import get_db
 from fastapi import Depends
+from app.services import order_services as o
 
+
+app = FastAPI()
 @app.put("/orders/", response_models = schemas.OrderBase)
 def confirm_order(order : schemas.OrderBase, db : Session = Depends(get_db)):
-    #pass
+    order = o.create_order(order = order, db = db)
+    return order
 
 
 @app.get("/orders/")
@@ -16,4 +20,5 @@ def get_orders(user_id : int, db : Session = Depends(get_db)):
 
 @app.get("/orders/{order_id}")
 def get_order_status(order_id : int, db : Session = Depends(get_db)):
+    #status = o.
     pass

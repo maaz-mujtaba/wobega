@@ -1,8 +1,8 @@
 from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
-import models
-import schemas
-from database import get_db
+from app import models
+from app import schemas
+from app.database import get_db
 from services.user_service import get_user
 
 def create_admin(email : str,admin : schemas.AdminBase, db : Session = Depends(get_db)):

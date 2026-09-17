@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
-import models
-import schemas
-from database import get_db
+from app import models
+from app import schemas
+from app.database import get_db
 import uuid
 from typing import List
 from datetime import datetime

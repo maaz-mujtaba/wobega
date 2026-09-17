@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException
-import schemas
-import models
-from database import get_db
+from app import schemas
+from app import models
+from app.database import get_db
 import uuid
 
 def add_item_to_order(orderItem : schemas.OrderItems, product : schemas.ProductListingBase, db : Session = Depends(get_db)):
@@ -78,3 +78,7 @@ def cancel_order(order : schemas.OrderBase, db : Session = Depends(get_db)):
 
     db.commit()
     db.refresh(placed_order)
+    return True
+
+def get_status(orderId : int, db : Session = Depends(get_db)):
+    

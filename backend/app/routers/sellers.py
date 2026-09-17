@@ -2,9 +2,9 @@ import uuid
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db
-import models
-import schemas
+from app.database import get_db
+from app import models
+from app import schemas
 from app.routers.api import app
 from datetime import datetime
 from services.seller_service import create_seller, get_seller

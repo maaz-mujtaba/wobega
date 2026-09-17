@@ -1,9 +1,9 @@
 from fastapi import FastAPI, APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.routers.api import app
-import schemas
-import models
-from database import get_db
+from app import schemas
+from app import models
+from app.database import get_db
 from datetime import datetime, timestamp
 from services.product_service import create_product, get_product
 

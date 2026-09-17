@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
-import models
-import schemas
+from app import models
+from app import schemas
 import uuid
-from database import get_db
+from app.database import get_db
 from datetime import datetime
 
 def get_seller(email : str, db : Session = Depends(get_db)):

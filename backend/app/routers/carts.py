@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
-import services.cart_service as c
-from database import get_db
+import app.services.cart_service as c
+from app.database import get_db
 from app.routers.api import app
-import schemas
-import models
+from app import schemas
+from app import models
 
 
 @app.put("/carts/")
@@ -22,7 +22,7 @@ def addItem(productId : int, cartId : int, db : Session = Depends(get_db)):
     item = c.add_item_to_cart(productListingId = productId, cartId = cartId, db = db)
     return item
 
-@app.remove("carts/{cart_id}/removeItem")
+@app.delete("carts/{cart_id}/removeItem")
 def removeItem(cart_items_id : int, item_id : int, db : Session = Depends(get_db)):
     flag = c.remove_item_from_kart(cart_items_id=cart_items_id, item_id=item_id, db = db)
     return flag

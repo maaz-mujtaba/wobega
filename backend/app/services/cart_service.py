@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, HTTPException, Depends
-from database import get_db
-import models
-import schemas
+from app.database import get_db
+from app import models
+from app import schemas
 
 def create_cart(cart : schemas.CartBase, db : Session = Depends(get_db)):
     #check if the cart already exists

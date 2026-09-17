@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from sqlalchemy import text
-
+import  uvicorn
 from app.database import engine
+from app.routers import carts, orders, products, sellers, users
 
 app = FastAPI(
     title = "Wobega",
@@ -22,3 +23,7 @@ def health_check():
     except Exception as e:
         return {"status" : "unhealthy",
             "error" : str(e)}
+    return False
+
+if __name__ == "__main__":
+    uvicorn.run("app.main:app", host ="0.0.0.0",reload = True)
