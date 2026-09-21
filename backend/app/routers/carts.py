@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 import app.services.cart_service as c
 from app.database import get_db
@@ -6,6 +6,7 @@ from app.routers.api import app
 from app import schemas
 from app import models
 
+app = APIRouter()
 
 @app.put("/carts/")
 def create(cart : schemas.CartBase, db : Session = Depends(get_db)):

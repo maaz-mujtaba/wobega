@@ -6,27 +6,28 @@ from app.database import get_db
 import uuid
 from typing import List
 from datetime import datetime
-import security
+import app.security as security
+import app.schemas as schemas
 
 def get_user(email : str, db : Session = Depends(get_db)):
-    user = db.query(models.users).filter(models.users.email == email).first()
+    user = db.query(models.Users).filter(models.Users.email == email).first()
     return user
 
-def create_user(user : schemas.userBase, db : Session = Depends(get_db)):
-    if (get_user(user.email)):
+def create_user(user : schemas.UserBase, db : Session = Depends(get_db)):
+    if (get_user(email = user.email, db = db)):
         raise HTTPException(
             status_code=401,
             detail = "User already exists"
         )
     
-    hash_password = security.hash_password(user.password)
-    new_user = models.users(
-        user_id = uuid.uuid4(),
+    secure_password = security.hash_password(user.hash_password)
+    new_user = models.Users(
+        #user_id = uuid.uuid4().int & (1 << 63)-1,
         name = user.name,
         email = user.email,
-        hashed_password = hash_password,
-        is_active = True,
+        hash_password = secure_password,
         role = user.role,
+        phone = user.phone
     )
     db.add(new_user)
     db.commit()
@@ -57,12 +58,12 @@ def update_password(email : str, new_password : str ,db : Session = Depends(get_
 
 
 def delete_account(email : str, db : Session = Depends(get_db)):
-    if not get_user(email):
+    user = get_user(email=email, db = db)
+    if not user:
         raise HTTPException(
             status_code=404,
             detail = "The user does not exist"
         )
-    user = db.query(models.users).filter(models.users.email == email).first()
     db.delete(user)
     db.refresh()
     return True

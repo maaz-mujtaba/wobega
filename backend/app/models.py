@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 class Users(Base):
     __tablename__ = "users"
 
-    user_id = Column(BIGINT, primary_key=True, index=True)
+    user_id = Column(BIGINT, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False)
     email = Column(String, unique = True, nullable=False)
     role = Column(String, nullable=False)
@@ -17,7 +17,7 @@ class Users(Base):
 class businesses(Base):
     __tablename__ = "businesses"
 
-    business_id = Column(BIGINT, primary_key=True, index=True)
+    business_id = Column(BIGINT, primary_key=True, index=True, autoincrement=True)
     owner_id = Column(BIGINT, ForeignKey("users.user_id"), nullable=False)
     name = Column(String, nullable=False)
     email = Column(String, unique = True, nullable=False)
@@ -29,7 +29,7 @@ class products(Base):
 
     __tablename__ = "products"
 
-    product_id = Column(BIGINT, primary_key = True, index = True)
+    product_id = Column(BIGINT, primary_key = True, index = True, autoincrement=True)
     product_name = Column(String, nullable=False)
     category = Column(String, nullable=False)
     description = Column(Text, nullable = True)
@@ -41,7 +41,7 @@ class product_listings(Base):
 
     __tablename__ = "product_listings"
 
-    product_listing_id = Column(BIGINT, primary_key = True, index = True)
+    product_listing_id = Column(BIGINT, primary_key = True, index = True, autoincrement=True)
     item_id = Column(BIGINT, ForeignKey('products.product_id'), nullable=False)
     seller_id = Column(BIGINT, ForeignKey('businesses.business_id'), nullable=False)
     price = Column(Numeric(12,2), nullable=False)
@@ -53,7 +53,7 @@ class orders(Base):
 
     __tablename__ = "orders"
 
-    order_id = Column(BIGINT, primary_key=True, index=True)
+    order_id = Column(BIGINT, primary_key=True, index=True, autoincrement=True)
     customer_id = Column(BIGINT, ForeignKey('users.user_id'), nullable=False)
     status = Column(String, nullable=False)
     total_amount = Column(Numeric(12,2), nullable=False)
@@ -63,7 +63,7 @@ class orders(Base):
 class order_items(Base):
     __tablename__ = "order_items"
 
-    order_items_id = Column(BIGINT, primary_key=True, index=True)
+    order_items_id = Column(BIGINT, primary_key=True, index=True, autoincrement=True)
     order_id = Column(BIGINT, ForeignKey('orders.order_id'), nullable=False)
     product_listing_id = Column(BIGINT, ForeignKey('product_listings.product_listing_id'), nullable=False)
     quantity = Column(Integer, nullable=False)
@@ -74,7 +74,7 @@ class carts(Base):
 
     __tablename__ = "carts"
 
-    cart_id = Column(BIGINT, primary_key=True, index=True)
+    cart_id = Column(BIGINT, primary_key=True, index=True, autoincrement=True)
     user_id = Column(BIGINT, ForeignKey('users.user_id'), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default = func.now(), nullable = False)
     updated_at = Column(DateTime(timezone=True), server_default = func.now(), onupdate=func.now(),nullable = False)
@@ -83,7 +83,7 @@ class cart_items(Base):
 
     __tablename__ = "cart_items"
 
-    cart_items_id = Column(BIGINT, primary_key = True, index = True)
+    cart_items_id = Column(BIGINT, primary_key = True, index = True, autoincrement=True)
     cart_id = Column(BIGINT, ForeignKey('carts.cart_id'), nullable=False)
     product_listing_id = Column(BIGINT, ForeignKey('product_listings.product_listing_id'), nullable=False)
     quantity = Column(Numeric(8,0), nullable=False)
