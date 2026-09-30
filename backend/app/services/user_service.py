@@ -9,12 +9,24 @@ from datetime import datetime
 import app.security as security
 import app.schemas as schemas
 
-def get_user(email : str, db : Session = Depends(get_db)):
+def get_user_by_email(email : str, db : Session = Depends(get_db)):
     user = db.query(models.Users).filter(models.Users.email == email).first()
     return user
 
-def create_user(user : schemas.UserBase, db : Session = Depends(get_db)):
-    if (get_user(email = user.email, db = db)):
+def get_user_by_id(id : int, db : Session = Depends(get_db)):
+    user = db.query(models.Users).filter(models.Users.user_id == id).first()
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User does not exist"
+        )
+    return user
+
+def  get_all_users(db : Session = Depends(get_db)):
+    return db.query(models.Users).all()
+
+def create_user(user : schemas.UserCreate, db : Session = Depends(get_db)):
+    if (get_user_by_email(email = user.email, db = db)):
         raise HTTPException(
             status_code=401,
             detail = "User already exists"
@@ -36,7 +48,7 @@ def create_user(user : schemas.UserBase, db : Session = Depends(get_db)):
 
 def update_password(email : str, new_password : str ,db : Session = Depends(get_db)):
     #check if user exists
-    existing_user = db.query(models.Users).filter(models.Users.email == email).first()
+    existing_user = get_user_by_email(email = email, db = db)
 
     if not existing_user:
         raise HTTPException(
@@ -54,11 +66,11 @@ def update_password(email : str, new_password : str ,db : Session = Depends(get_
     existing_user.hash_password = security.hash_password(new_password)
     db.commit()
     db.refresh(existing_user)
-    return True
+    return {"message" : "Password updated successfully"}
 
 
 def delete_account(email : str, db : Session = Depends(get_db)):
-    user = get_user(email=email, db = db)
+    user = get_user_by_email(email=email, db = db)
     if not user:
         raise HTTPException(
             status_code=404,
