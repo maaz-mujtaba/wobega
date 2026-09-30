@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from sqlalchemy.orm import Session
 from app import models
 from app import schemas
@@ -9,11 +9,11 @@ from datetime import datetime
 import app.security as security
 import app.schemas as schemas
 
-def get_user_by_email(email : str, db : Session = Depends(get_db)):
+def get_user_by_email(email : str, db : Session ):
     user = db.query(models.Users).filter(models.Users.email == email).first()
     return user
 
-def get_user_by_id(id : int, db : Session = Depends(get_db)):
+def get_user_by_id(id : int, db : Session):
     user = db.query(models.Users).filter(models.Users.user_id == id).first()
     if not user:
         raise HTTPException(
@@ -22,10 +22,10 @@ def get_user_by_id(id : int, db : Session = Depends(get_db)):
         )
     return user
 
-def  get_all_users(db : Session = Depends(get_db)):
+def  get_all_users(db : Session):
     return db.query(models.Users).all()
 
-def create_user(user : schemas.UserCreate, db : Session = Depends(get_db)):
+def create_user(user : schemas.UserCreate, db : Session):
     if (get_user_by_email(email = user.email, db = db)):
         raise HTTPException(
             status_code=401,
@@ -46,7 +46,7 @@ def create_user(user : schemas.UserCreate, db : Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-def update_password(email : str, new_password : str ,db : Session = Depends(get_db)):
+def update_password(email : str, new_password : str ,db : Session):
     #check if user exists
     existing_user = get_user_by_email(email = email, db = db)
 
@@ -69,7 +69,7 @@ def update_password(email : str, new_password : str ,db : Session = Depends(get_
     return {"message" : "Password updated successfully"}
 
 
-def delete_account(email : str, db : Session = Depends(get_db)):
+def delete_account(email : str, db : Session):
     user = get_user_by_email(email=email, db = db)
     if not user:
         raise HTTPException(
