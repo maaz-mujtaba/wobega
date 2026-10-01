@@ -9,7 +9,11 @@ class UserBase(BaseModel):
     role : str
     phone : Optional[str] = None
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    name : str
+    email : str
+    role : str
+    phone : Optional[str] = None
     hash_password : str
     created_at : datetime =  datetime.now()
     updated_at : datetime =  datetime.now()

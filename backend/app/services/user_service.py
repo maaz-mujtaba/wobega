@@ -77,5 +77,5 @@ def delete_account(email : str, db : Session):
             detail = "The user does not exist"
         )
     db.delete(user)
-    db.refresh()
+    db.commit()
     return True
