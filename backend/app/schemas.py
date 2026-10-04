@@ -26,9 +26,17 @@ class BusinessBase(BaseModel):
     name : str
     email : str
     description : Optional[str] = None
+    address : Optional[str] = None
     class Config :
         from_attributes = True
 
+class BusinessCreate(BaseModel):
+    owner_id : int
+    name : str
+    email : str
+    address : Optional[str] = None
+    class Config:
+        from_attributes = True
 class AdminBase(UserBase):
     role : str
     created_at : datetime =  datetime.now()
