@@ -6,7 +6,9 @@ from app.database import get_db
 
 def create_product_listing(product_listing : schemas.ProductListingCreate, db : Session):
     #check if a product listing already exists
-    existing_product_listing = db.query(models.product_listings).filter(models.product_listings.item_id == product_listing.item_id).first()
+    existing_product_listing = db.query(models.product_listings).filter(models.product_listings.item_id == product_listing.item_id,
+                                                                        models.product_listings.seller_id == product_listing.seller_id
+                                                                        ).first()
 
     if existing_product_listing:
         raise HTTPException(

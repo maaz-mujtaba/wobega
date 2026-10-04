@@ -8,7 +8,7 @@ from datetime import datetime
 
 def create_product(product : schemas.ProductBase, db : Session = Depends(get_db)):
     #check if a product already exists
-    existing_product = db.query(models.products).filter(models.products.product_id == product.product_id).first()
+    existing_product = db.query(models.products).filter(models.products.product_name == product.product_name).first()
 
     if existing_product:
         raise HTTPException(
@@ -17,7 +17,7 @@ def create_product(product : schemas.ProductBase, db : Session = Depends(get_db)
         )
     
     new_product = models.products(
-        product_id = uuid.uuid4(),
+        #product_id = uuid.uuid4(),
         product_name = product.product_name,
         category = product.category,
         description = product.description,
