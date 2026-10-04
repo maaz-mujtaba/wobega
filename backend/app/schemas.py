@@ -52,8 +52,24 @@ class ProductBase(BaseModel):
     class Config:
         from_attributes = True
 
+class ProductCreate(BaseModel):
+    product_name : str
+    category : str
+    description : Optional[str] = None
+    brand : Optional[str] = None
+    class Config:
+        from_attributes = True
+
 class ProductListingBase(BaseModel):
     product_listing_id : int
+    item_id : int
+    seller_id : int
+    price : float
+    stock : int
+    class Config:
+        from_attributes = True
+
+class ProductListingCreate(BaseModel):
     item_id : int
     seller_id : int
     price : float
