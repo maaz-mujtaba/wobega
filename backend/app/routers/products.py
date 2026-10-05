@@ -10,11 +10,11 @@ from app.services.product_service import create_product, get_product
 app = APIRouter()
 
 @app.put("/products/")
-def add_product(product : schemas.ProductBase, db : Session = Depends(get_db)):
-    new_product = create_product(product)
+def add_product(product : schemas.ProductCreate, db : Session = Depends(get_db)):
+    new_product = create_product(product,db=db)
     return new_product
     
 
 @app.get("/products/")
-def get_products(id : int, db : Session = Depends(get_db)):
-    return get_product(id=id, db=db)
+def get_products(name : str, db : Session = Depends(get_db)):
+    return get_product(name=name, db=db)

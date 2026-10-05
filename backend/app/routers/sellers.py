@@ -38,6 +38,7 @@ from app.database import get_db
 from app import models
 from app import schemas
 from app.services.seller_service import create_seller as service_create_seller, get_seller
+from app.services.product_listing_service import get_products_sold_by_seller, create_product_listing, get_product_listing
 
 app = APIRouter()
 
@@ -58,3 +59,11 @@ def get_seller_by_email(email: str, db: Session = Depends(get_db)):
             detail="Seller not found"
         )
     return seller
+
+@app.post("/sellers/listings")
+def add_product_listing(product_listing: schemas.ProductListingCreate, db: Session = Depends(get_db)):
+    return create_product_listing(product_listing=product_listing, db=db)
+
+@app.get("/sellers/{email}/listings", response_model=List[schemas.ProductListingBase])
+def get_products_sold_by_seller(email: str, db: Session = Depends(get_db)):
+    return get_products_sold_by_seller(email=email, db=db)

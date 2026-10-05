@@ -6,7 +6,7 @@ from app import schemas
 import uuid
 from datetime import datetime
 
-def create_product(product : schemas.ProductBase, db : Session = Depends(get_db)):
+def create_product(product : schemas.ProductCreate, db : Session):
     #check if a product already exists
     existing_product = db.query(models.products).filter(models.products.product_name == product.product_name).first()
 
@@ -17,7 +17,6 @@ def create_product(product : schemas.ProductBase, db : Session = Depends(get_db)
         )
     
     new_product = models.products(
-        #product_id = uuid.uuid4(),
         product_name = product.product_name,
         category = product.category,
         description = product.description,
@@ -29,9 +28,9 @@ def create_product(product : schemas.ProductBase, db : Session = Depends(get_db)
     db.refresh()
     return new_product
 
-def get_product(id : int, db : Session = Depends(get_db)):
+def get_product(name : str, db : Session):
     #check if the product does not exist
-    product = db.query(models.products).filter(models.products.product_id == id).first()
+    product = db.query(models.products).filter(models.products.product_name.ilike(f"%{name}%")).first()
     if not product:
         raise HTTPException(
             status_code=404,

@@ -4,6 +4,7 @@ from app import models
 from app import schemas
 from app.database import get_db
 
+
 def create_product_listing(product_listing : schemas.ProductListingCreate, db : Session):
     #check if a product listing already exists
     existing_product_listing = db.query(models.product_listings).filter(models.product_listings.item_id == product_listing.item_id,
@@ -37,3 +38,19 @@ def get_product_listing(id : int, db : Session):
             detail="The product listing does not exist"
         )
     return product_listing
+
+def get_products_sold_by_seller(email : str, db : Session):
+    #check if the seller exists
+    seller = db.query(models.businesses).filter(models.businesses.email == email).first()
+    if not seller:
+        raise HTTPException(
+            status_code=404,
+            detail="The seller does not exist"
+        )
+    
+    #get all products sold by the seller
+    products_sold = db.query(models.product_listings).filter(models.product_listings.seller_id == seller.business_id).all()
+    return products_sold
+
+
+#Product listing will be made by the sellers

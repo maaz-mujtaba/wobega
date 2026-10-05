@@ -3,6 +3,7 @@ from sqlalchemy import text
 import  uvicorn
 from app.database import engine
 from app.routers import carts, orders, products, sellers, users
+from backend.app.models import product_listings
 
 app = FastAPI(
     title = "Wobega",
@@ -13,6 +14,7 @@ app.include_router(sellers.app)
 app.include_router(orders.app)
 app.include_router(carts.app)
 app.include_router(products.app)
+app.include_router(product_listings.app)
 
 @app.get("/")
 def root():
