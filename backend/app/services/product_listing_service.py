@@ -17,6 +17,30 @@ def create_product_listing(product_listing : schemas.ProductListingCreate, db : 
             detail="Product Listing Already exists"
         )
     
+    if not db.query(models.businesses).filter(models.businesses.business_id == product_listing.seller_id).first():
+        raise HTTPException(
+            status_code=404,
+            detail="Seller does not exist"
+        )
+    
+    if not db.query(models.products).filter(models.products.product_id == product_listing.item_id).first():
+        raise HTTPException(
+            status_code=404,
+            detail="Item does not exist"
+        )
+    
+    if product_listing.price <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Price must be greater than 0"
+        )
+    
+    if product_listing.stock < 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Stock must be greater than or equal to 0"
+        )
+    
     new_product_listing = models.product_listings(
         item_id = product_listing.item_id,
         seller_id = product_listing.seller_id,

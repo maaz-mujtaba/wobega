@@ -25,7 +25,7 @@ def create_product(product : schemas.ProductCreate, db : Session):
 
     db.add(new_product)
     db.commit()
-    db.refresh()
+    db.refresh(new_product)
     return new_product
 
 def get_product(name : str, db : Session):
@@ -37,3 +37,12 @@ def get_product(name : str, db : Session):
             detail="The product does not exist"
         )
     return product
+
+def get_all_products(db : Session):
+    products = db.query(models.products).all()
+    if not products:
+        raise HTTPException(
+            status_code=404,
+            detail="No products found"
+        )
+    return products
