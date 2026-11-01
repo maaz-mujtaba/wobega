@@ -31,12 +31,11 @@ def add_item_to_order(orderItem : schemas.OrderItems, product : schemas.ProductL
     return order_item
 
 
-def create_order(order : schemas.OrderBase, db : Session = Depends(get_db)):
+def create_order(order : schemas.OrderCreate, cost : float,db : Session = Depends(get_db)):
     order = models.orders(
-        order_id = uuid.uuid4(),
         customer_id = order.customer_id,
         status = order.status,
-        total_amount = order.total_amount,
+        total_amount = cost,
         shipping_address = order.shipping_address,
     )
     db.add(order)

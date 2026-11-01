@@ -86,6 +86,13 @@ class OrderBase(BaseModel):
     class Config:
         from_attributes = True
 
+class OrderCreate(BaseModel):
+    customer_id : int
+    shipping_address : str
+    status : str
+    class Config:
+        from_attributes = True
+
 class OrderItems(BaseModel):
     order_item_id : int
     order_id : int

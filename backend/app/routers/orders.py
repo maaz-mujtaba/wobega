@@ -4,13 +4,20 @@ from app import schemas
 from app import models
 from app.database import get_db
 from fastapi import Depends
-from app.services import order_services as o
+from app.services import order_services as service
+
 
 
 app = APIRouter()
-@app.put("/orders/", response_model = schemas.OrderBase)
-def confirm_order(order : schemas.OrderBase, db : Session = Depends(get_db)):
-    order = o.create_order(order = order, db = db)
+
+@app.put("/orders/")
+def create_order(order : schemas.OrderCreate, cost : float, db : Session = Depends(get_db)):
+    order = service.create_order(order = order, cost = cost, db = db)
+    return order
+
+@app.put("/orders/{order_id}", response_model = schemas.OrderBase)
+def confirm_order(order_id : int, db : Session = Depends(get_db)):
+    order = service.create_order(order = order, db = db)
     return order
 
 
